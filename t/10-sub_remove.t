@@ -10,15 +10,25 @@ use Test::More;
 
 # Throws
 {
-    throws_ok
-        { sub_remove() }
-        qr/sub_remove\(\) requires a subroutine name/,
+    is
+        eval { sub_remove(); 1; },
+        undef,
         "sub_remove() barfs if no parameters sent in ok";
 
-    throws_ok
-        { sub_remove('asdfasdf') }
-        qr/Subroutine named 'main::asdfasdf' doesn't exist/,
+    like
+        $@,
+        qr/sub_remove\(\) requires a subroutine name/,
+        "...and error message is sane";
+
+    is
+        eval { sub_remove('asdfasdf'); 1; },
+        undef,
         "sub_remove() barfs if sub name sent in doesn't exist ok";
+
+    like
+        $@,
+        qr/Subroutine named 'main::asdfasdf' doesn't exist/,
+        "...and error message is sane";
 }
 
 # main sub
@@ -37,10 +47,15 @@ use Test::More;
         undef,
         "sub_remove() removed main::testing() ok";
 
-    throws_ok
-        { testing() }
-        qr/Undefined subroutine/,
+    is
+        eval { testing(); 1; },
+        undef,
         "...and it definitely can't be called";
+
+    like
+        $@,
+        qr/Undefined subroutine/,
+        "...and error message is sane"
 }
 
 sub testing {

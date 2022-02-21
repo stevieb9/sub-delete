@@ -5,7 +5,6 @@ use warnings;
 
 use Sub::Remove qw(sub_remove);
 
-use Test::Exception;
 use Test::More;
 
 package Testing {
@@ -17,10 +16,14 @@ package Testing {
 package main {
     # Throws
     {
-        throws_ok
-            {sub_remove('asdfasdf', 'Testing')}
-            qr/Subroutine named 'Testing::asdfasdf' doesn't exist/,
+        is
+            eval { sub_remove('asdfasdf', 'Testing'); 1; },
+            undef,
             "sub_remove() barfs if sub name sent in doesn't exist ok";
+        like
+            $@,
+            qr/Subroutine named 'Testing::asdfasdf' doesn't exist/,
+            "...and error message is sane";
     }
 
     # Testing::function sub
@@ -39,10 +42,15 @@ package main {
             undef,
             "sub_remove() removed Testing::function() ok";
 
-        throws_ok
-            { Testing::function() }
-            qr/Undefined subroutine/,
+        is
+            eval { Testing::function(); 1; },
+            undef,
             "...and it definitely can't be called";
+
+        like
+            $@,
+            qr/Undefined subroutine/,
+            "...and error message is sane";
     }
 }
 
