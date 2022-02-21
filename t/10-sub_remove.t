@@ -5,7 +5,6 @@ use warnings;
 
 use Sub::Remove qw(sub_remove);
 
-use Test::Exception;
 use Test::More;
 
 # Throws
