@@ -3,12 +3,31 @@ package Sub::Remove;
 use strict;
 use warnings;
 
+use Carp qw(croak);
+use Exporter qw(import);
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw(
+    sub_remove
+);
+
 our $VERSION = '0.01';
 
 sub __placeholder {}
 
 sub sub_remove {
     my ($sub_name, $class) = @_;
+
+    if (! defined $sub_name) {
+        croak "sub_remove() requires a subroutine name as parameter";
+    }
+
+    if (! defined $class) {
+        $class = 'main';
+    }
+
+    if (! $class->can($sub_name)) {
+        croak "Subroutine named '${class}::${sub_name}' doesn't exist";
+    }
 
     my $src;
 
