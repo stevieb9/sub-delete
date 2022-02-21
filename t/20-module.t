@@ -7,13 +7,15 @@ use Sub::Remove qw(sub_remove);
 
 use Test::More;
 
-package Testing {
+{
+    package Testing;
+
     sub function {
         return 100;
     }
-};
+}
 
-package main {
+{
     # Throws
     {
         is
